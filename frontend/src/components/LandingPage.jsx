@@ -43,8 +43,108 @@ const LandingPage = () => {
               : 'Evaluasi implementasi Solid Edge Anda dengan alat penilaian komprehensif kami.'
             }
           </p>
-
         </div>
+
+        {/* Case Study Toggle */}
+        <div className="mb-6">
+          <button
+            onClick={() => setShowCaseStudy(!showCaseStudy)}
+            className="neumo-button primary w-full py-5 flex items-center justify-center space-x-3 text-lg font-semibold text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+          >
+            <span className="text-2xl animate-bounce">📽️</span>
+            <span>
+              {language === 'EN' 
+                ? (showCaseStudy ? 'Hide Customer Success Story' : 'View Customer Success Story')
+                : (showCaseStudy ? 'Sembunyikan Kisah Sukses Pelanggan' : 'Lihat Kisah Sukses Pelanggan')
+              }
+            </span>
+            <span className="text-xl transition-transform duration-300">
+              {showCaseStudy ? '⌃' : '⌄'}
+            </span>
+          </button>
+        </div>
+
+        {/* Case Study Content */}
+        {showCaseStudy && (
+          <div className="neumo-card mb-6 p-6 space-y-6 max-h-96 overflow-y-auto">
+            {/* Header */}
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center justify-center">
+                <span className="mr-2">📽️</span>
+                {language === 'EN' ? 'ADR Group - Success Story' : 'ADR Group - Kisah Sukses'}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {language === 'EN' 
+                  ? 'Indonesian automotive manufacturer achieving excellence with Solid Edge'
+                  : 'Produsen otomotif Indonesia mencapai keunggulan dengan Solid Edge'
+                }
+              </p>
+            </div>
+
+            {/* YouTube Video */}
+            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full rounded-lg"
+                src="https://www.youtube.com/embed/PTBSFF0sghA"
+                title="PT ADR Case Study"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+
+            {/* Case Study Summary */}
+            <div className="space-y-4">
+              {/* Company Background */}
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
+                  <span className="mr-2">🏢</span>
+                  {language === 'EN' ? 'Company Background' : 'Latar Belakang Perusahaan'}
+                </h4>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {language === 'EN'
+                    ? 'ADR Group (PT. Selamat Sempurna, Tbk) is a listed Indonesian manufacturer specializing in automotive components such as radiators, filters, and brake systems.'
+                    : 'ADR Group (PT. Selamat Sempurna, Tbk) adalah produsen Indonesia yang terdaftar yang mengkhususkan diri dalam komponen otomotif seperti radiator, filter, dan sistem rem.'
+                  }
+                </p>
+              </div>
+
+              {/* Challenges */}
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
+                  <span className="mr-2">⚙️</span>
+                  {language === 'EN' ? 'Challenges Faced' : 'Tantangan yang Dihadapi'}
+                </h4>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {language === 'EN'
+                    ? 'The company encountered complex CAD design workflows, long modeling times, and inconsistencies in surface modeling quality using traditional methods.'
+                    : 'Perusahaan menghadapi alur kerja desain CAD yang kompleks, waktu pemodelan yang lama, dan inkonsistensi dalam kualitas pemodelan permukaan menggunakan metode tradisional.'
+                  }
+                </p>
+              </div>
+
+              {/* Solutions & Improvements */}
+              <div>
+                <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
+                  <span className="mr-2">✅</span>
+                  {language === 'EN' ? 'Solutions & Results' : 'Solusi & Hasil'}
+                </h4>
+                <p className="text-sm text-gray-600 mb-3 leading-relaxed">
+                  {language === 'EN'
+                    ? 'After adopting Solid Edge with synchronous modeling, ADR Group achieved:'
+                    : 'Setelah mengadopsi Solid Edge dengan pemodelan sinkron, ADR Group mencapai:'
+                  }
+                </p>
+                <ul className="text-sm text-gray-600 space-y-2 ml-4">
+                  <li>• {language === 'EN' ? '30% reduction in design iteration time' : '30% pengurangan waktu iterasi desain'}</li>
+                  <li>• {language === 'EN' ? 'Smoother surface transitions with better G2 control' : 'Transisi permukaan yang lebih halus dengan kontrol G2 yang lebih baik'}</li>
+                  <li>• {language === 'EN' ? 'Easier collaboration across design teams' : 'Kolaborasi yang lebih mudah antar tim desain'}</li>
+                  <li>• {language === 'EN' ? 'Improved productivity in handling large assemblies' : 'Peningkatan produktivitas dalam menangani perakitan besar'}</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Main Form Section */}
         <div className="space-y-6">
@@ -94,105 +194,6 @@ const LandingPage = () => {
             )}
           </button>
         </div>
-
-        {/* Case Study Toggle */}
-        <div className="mt-8">
-          <button
-            onClick={() => setShowCaseStudy(!showCaseStudy)}
-            className="neumo-button secondary w-full py-4 flex items-center justify-center space-x-3 text-base"
-          >
-            <span className="text-lg">⌄</span>
-            <span>
-              {language === 'EN' 
-                ? (showCaseStudy ? 'Hide Customer Success Story' : 'View Customer Success Story')
-                : (showCaseStudy ? 'Sembunyikan Kisah Sukses Pelanggan' : 'Lihat Kisah Sukses Pelanggan')
-              }
-            </span>
-          </button>
-
-        </div>
-
-        {/* Case Study Content */}
-        {showCaseStudy && (
-          <div className="neumo-card mt-6 p-6 space-y-6 max-h-96 overflow-y-auto">
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center justify-center">
-                <span className="mr-2">📽️</span>
-                                 {language === 'EN' ? 'ADR Group - Success Story' : 'ADR Group - Kisah Sukses'}
-              </h3>
-              <p className="text-sm text-gray-600">
-                {language === 'EN' 
-                  ? 'Indonesian automotive manufacturer achieving excellence with Solid Edge'
-                  : 'Produsen otomotif Indonesia mencapai keunggulan dengan Solid Edge'
-                }
-              </p>
-            </div>
-
-            {/* YouTube Video */}
-            <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-              <iframe
-                className="absolute top-0 left-0 w-full h-full rounded-lg"
-                src="https://www.youtube.com/embed/PTBSFF0sghA"
-                title="PT ADR Case Study"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              ></iframe>
-            </div>
-
-            {/* Case Study Summary */}
-            <div className="space-y-4">
-              {/* Company Background */}
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                  <span className="mr-2">🏢</span>
-                  {language === 'EN' ? 'Company Background' : 'Latar Belakang Perusahaan'}
-                </h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                                     {language === 'EN'
-                     ? 'ADR Group (PT. Selamat Sempurna, Tbk) is a listed Indonesian manufacturer specializing in automotive components such as radiators, filters, and brake systems.'
-                     : 'ADR Group (PT. Selamat Sempurna, Tbk) adalah produsen Indonesia yang terdaftar yang mengkhususkan diri dalam komponen otomotif seperti radiator, filter, dan sistem rem.'
-                   }
-                </p>
-              </div>
-
-              {/* Challenges */}
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                  <span className="mr-2">⚙️</span>
-                  {language === 'EN' ? 'Challenges Faced' : 'Tantangan yang Dihadapi'}
-                </h4>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {language === 'EN'
-                    ? 'The company encountered complex CAD design workflows, long modeling times, and inconsistencies in surface modeling quality using traditional methods.'
-                    : 'Perusahaan menghadapi alur kerja desain CAD yang kompleks, waktu pemodelan yang lama, dan inkonsistensi dalam kualitas pemodelan permukaan menggunakan metode tradisional.'
-                  }
-                </p>
-              </div>
-
-              {/* Solutions & Improvements */}
-              <div>
-                <h4 className="font-semibold text-gray-800 mb-2 flex items-center">
-                  <span className="mr-2">✅</span>
-                  {language === 'EN' ? 'Solutions & Results' : 'Solusi & Hasil'}
-                </h4>
-                <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                                     {language === 'EN'
-                     ? 'After adopting Solid Edge with synchronous modeling, ADR Group achieved:'
-                     : 'Setelah mengadopsi Solid Edge dengan pemodelan sinkron, ADR Group mencapai:'
-                   }
-                </p>
-                <ul className="text-sm text-gray-600 space-y-2 ml-4">
-                  <li>• {language === 'EN' ? '30% reduction in design iteration time' : '30% pengurangan waktu iterasi desain'}</li>
-                  <li>• {language === 'EN' ? 'Smoother surface transitions with better G2 control' : 'Transisi permukaan yang lebih halus dengan kontrol G2 yang lebih baik'}</li>
-                  <li>• {language === 'EN' ? 'Easier collaboration across design teams' : 'Kolaborasi yang lebih mudah antar tim desain'}</li>
-                  <li>• {language === 'EN' ? 'Improved productivity in handling large assemblies' : 'Peningkatan produktivitas dalam menangani perakitan besar'}</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Admin Link */}
         <div className="mt-8 text-center">
