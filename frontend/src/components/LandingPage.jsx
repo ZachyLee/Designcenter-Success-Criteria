@@ -35,7 +35,7 @@ const LandingPage = () => {
         {/* Header Section */}
         <div className="text-center mb-8">
           <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-            Solid Edge Success Criteria Checklist - V2
+            Solid Edge Success Criteria Checklist
           </h1>
           <p className="text-gray-600 text-sm md:text-base">
             {language === 'EN' 
@@ -43,18 +43,7 @@ const LandingPage = () => {
               : 'Evaluasi implementasi Solid Edge Anda dengan alat penilaian komprehensif kami.'
             }
           </p>
-          {/* Force refresh indicator */}
-          <div className="mt-4 p-4 bg-yellow-200 border-4 border-yellow-500 rounded-lg">
-            <p className="text-lg text-yellow-800 font-bold text-center">
-              🚨 NEW VERSION DEPLOYED - V2
-            </p>
-            <p className="text-sm text-yellow-700 text-center mt-2">
-              If you see this yellow box, the latest code is working!
-            </p>
-            <p className="text-xs text-yellow-600 mt-1 text-center">
-              Build: {new Date().toISOString()}
-            </p>
-          </div>
+
         </div>
 
         {/* Main Form Section */}
@@ -120,10 +109,7 @@ const LandingPage = () => {
               }
             </span>
           </button>
-          {/* Temporary test indicator */}
-          <div className="mt-2 text-center text-xs text-blue-600 font-semibold">
-            🆕 Latest Version Loaded
-          </div>
+
         </div>
 
         {/* Case Study Content */}
@@ -133,7 +119,7 @@ const LandingPage = () => {
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold text-gray-800 mb-2 flex items-center justify-center">
                 <span className="mr-2">📽️</span>
-                {language === 'EN' ? 'PT ADR - Success Story' : 'PT ADR - Kisah Sukses'}
+                                 {language === 'EN' ? 'ADR Group - Success Story' : 'ADR Group - Kisah Sukses'}
               </h3>
               <p className="text-sm text-gray-600">
                 {language === 'EN' 
@@ -164,10 +150,10 @@ const LandingPage = () => {
                   {language === 'EN' ? 'Company Background' : 'Latar Belakang Perusahaan'}
                 </h4>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  {language === 'EN'
-                    ? 'PT ADR is a listed Indonesian manufacturer specializing in automotive components such as radiators, filters, and brake systems.'
-                    : 'PT ADR adalah produsen Indonesia yang terdaftar yang mengkhususkan diri dalam komponen otomotif seperti radiator, filter, dan sistem rem.'
-                  }
+                                     {language === 'EN'
+                     ? 'ADR Group (PT. Selamat Sempurna, Tbk) is a listed Indonesian manufacturer specializing in automotive components such as radiators, filters, and brake systems.'
+                     : 'ADR Group (PT. Selamat Sempurna, Tbk) adalah produsen Indonesia yang terdaftar yang mengkhususkan diri dalam komponen otomotif seperti radiator, filter, dan sistem rem.'
+                   }
                 </p>
               </div>
 
@@ -192,10 +178,10 @@ const LandingPage = () => {
                   {language === 'EN' ? 'Solutions & Results' : 'Solusi & Hasil'}
                 </h4>
                 <p className="text-sm text-gray-600 mb-3 leading-relaxed">
-                  {language === 'EN'
-                    ? 'After adopting Solid Edge with synchronous modeling, PT ADR achieved:'
-                    : 'Setelah mengadopsi Solid Edge dengan pemodelan sinkron, PT ADR mencapai:'
-                  }
+                                     {language === 'EN'
+                     ? 'After adopting Solid Edge with synchronous modeling, ADR Group achieved:'
+                     : 'Setelah mengadopsi Solid Edge dengan pemodelan sinkron, ADR Group mencapai:'
+                   }
                 </p>
                 <ul className="text-sm text-gray-600 space-y-2 ml-4">
                   <li>• {language === 'EN' ? '30% reduction in design iteration time' : '30% pengurangan waktu iterasi desain'}</li>

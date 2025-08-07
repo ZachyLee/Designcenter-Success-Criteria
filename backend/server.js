@@ -39,17 +39,10 @@ app.get('/api/health', (req, res) => {
 
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
-  const frontendPath = path.join(__dirname, '../frontend/dist');
-  console.log('Serving frontend from:', frontendPath);
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
   
-  // Serve static files (CSS, JS, images)
-  app.use(express.static(frontendPath));
-  
-  // Serve index.html for all routes (SPA routing)
   app.get('*', (req, res) => {
-    const indexPath = path.join(frontendPath, 'index.html');
-    console.log('Serving index.html from:', indexPath);
-    res.sendFile(indexPath);
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
   });
 }
 
@@ -78,8 +71,6 @@ async function initializeApp() {
 // Start server
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
-  console.log(`Production mode: ${process.env.NODE_ENV === 'production'}`);
   await initializeApp();
 });
 
