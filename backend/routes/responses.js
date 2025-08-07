@@ -94,6 +94,34 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// POST /api/responses/access-request - Submit access code request
+router.post('/access-request', async (req, res) => {
+  try {
+    const { email, message } = req.body;
+
+    // Validate required fields
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ 
+        error: 'Valid email address is required' 
+      });
+    }
+
+    // Store access request in database
+    await db.insertAccessRequest(email, message || '');
+    res.json({
+      success: true,
+      message: 'Access code request submitted successfully'
+    });
+
+  } catch (error) {
+    console.error('Error submitting access request:', error);
+    res.status(500).json({ 
+      error: 'Failed to submit access request',
+      details: error.message 
+    });
+  }
+});
+
 // GET /api/responses/:id/pdf - Generate PDF for specific response
 router.get('/:id/pdf', async (req, res) => {
   try {

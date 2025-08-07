@@ -212,6 +212,9 @@ class PDFGenerator {
     doc.setFontSize(12);
     doc.text('User Summary:', 20, 50);
     
+    // Get all access requests
+    const accessRequests = await db.getAllAccessRequests();
+    
     const enhancedResponseData = [];
     
     for (const response of allResponses) {
@@ -228,30 +231,36 @@ class PDFGenerator {
       const performanceScore = answerSummary.total > 0 ? Math.round((answerSummary.yes / answerSummary.total) * 100) : 0;
       const completionRate = Math.round((answerSummary.total / 19) * 100);
       
+      // Check if user has made an access request
+      const userAccessRequest = accessRequests.find(req => req.email === response.email);
+      const accessRequestStatus = userAccessRequest ? 'Yes' : 'No';
+      
       enhancedResponseData.push([
         response.email,
         response.language === 'EN' ? 'English' : 'Bahasa Indonesia',
         moment(response.timestamp).format('YYYY-MM-DD'),
         `${performanceScore}%`,
         `${answerSummary.yes}/${answerSummary.no}/${answerSummary.na}`,
-        answerSummary.withRemarks.toString()
+        answerSummary.withRemarks.toString(),
+        accessRequestStatus
       ]);
     }
     
     doc.autoTable({
-      head: [['Email', 'Language', 'Date', 'Score', 'Yes/No/NA', 'Remarks']],
+      head: [['Email', 'Language', 'Date', 'Score', 'Yes/No/NA', 'Remarks', 'Access Request']],
       body: enhancedResponseData,
       startY: 60,
       theme: 'striped',
       headStyles: { fillColor: [41, 128, 185] },
       styles: { fontSize: 9, cellPadding: 3 },
       columnStyles: {
-        0: { cellWidth: 50 }, // Email
-        1: { cellWidth: 25 }, // Language
-        2: { cellWidth: 25 }, // Date
-        3: { cellWidth: 20 }, // Score
-        4: { cellWidth: 35 }, // Yes/No/NA
-        5: { cellWidth: 20 }  // Remarks
+        0: { cellWidth: 45 }, // Email
+        1: { cellWidth: 22 }, // Language
+        2: { cellWidth: 22 }, // Date
+        3: { cellWidth: 18 }, // Score
+        4: { cellWidth: 30 }, // Yes/No/NA
+        5: { cellWidth: 18 }, // Remarks
+        6: { cellWidth: 25 }  // Access Request
       }
     });
 

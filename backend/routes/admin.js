@@ -425,4 +425,47 @@ router.delete('/responses/:id', adminAuth, async (req, res) => {
   }
 });
 
+// GET /api/admin/access-requests - Get all access requests
+router.get('/access-requests', adminAuth, async (req, res) => {
+  try {
+    const accessRequests = await db.getAllAccessRequests();
+    
+    res.json({
+      success: true,
+      data: accessRequests
+    });
+  } catch (error) {
+    console.error('Error fetching access requests:', error);
+    res.status(500).json({ 
+      error: 'Failed to fetch access requests',
+      details: error.message 
+    });
+  }
+});
+
+// PUT /api/admin/access-requests/:id/status - Update access request status
+router.put('/access-requests/:id/status', adminAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    
+    if (!['pending', 'approved', 'rejected', 'completed'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+    
+    await db.updateAccessRequestStatus(id, status);
+    
+    res.json({
+      success: true,
+      message: 'Access request status updated successfully'
+    });
+  } catch (error) {
+    console.error('Error updating access request status:', error);
+    res.status(500).json({ 
+      error: 'Failed to update access request status',
+      details: error.message 
+    });
+  }
+});
+
 module.exports = router;

@@ -9,6 +9,12 @@ const Summary = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [downloadingPdf, setDownloadingPdf] = useState(false);
+  const [showAccessModal, setShowAccessModal] = useState(false);
+  const [accessEmail, setAccessEmail] = useState('');
+  const [accessMessage, setAccessMessage] = useState('');
+  const [submittingAccess, setSubmittingAccess] = useState(false);
+  const [showReminder, setShowReminder] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
     fetchResponseData();
@@ -72,6 +78,59 @@ const Summary = () => {
       return groups;
     }, {});
   };
+
+  // Certification section functions
+  const handleCertificationClick = () => {
+    setHasInteracted(true);
+    window.open('https://cadcertification.sw.siemens.com/solid-edge/', '_blank');
+  };
+
+  const handleAcademyClick = () => {
+    setHasInteracted(true);
+    window.open('https://learn.sw.siemens.com/library/solid-edge-for-education-and-community/VyR_oDmjP', '_blank');
+  };
+
+  const handleRequestAccess = () => {
+    setHasInteracted(true);
+    setAccessEmail(sessionStorage.getItem('userEmail') || '');
+    setShowAccessModal(true);
+  };
+
+  const handleSubmitAccessRequest = async () => {
+    try {
+      setSubmittingAccess(true);
+      
+      const response = await axios.post('/api/responses/access-request', {
+        email: accessEmail,
+        message: accessMessage
+      });
+
+      if (response.data.success) {
+        alert('Thanks! We\'ll email your access code shortly.');
+        setShowAccessModal(false);
+        setAccessEmail('');
+        setAccessMessage('');
+      } else {
+        alert('Failed to submit request. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error submitting access request:', error);
+      alert('Failed to submit request. Please try again.');
+    } finally {
+      setSubmittingAccess(false);
+    }
+  };
+
+  // Show reminder after 5 seconds if user hasn't interacted
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!hasInteracted && !showReminder) {
+        setShowReminder(true);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [hasInteracted, showReminder]);
 
   if (loading) {
     return (
@@ -194,6 +253,107 @@ const Summary = () => {
           </div>
         </div>
 
+        {/* Certification Section */}
+        <div className="neumo-card mt-6">
+          <div className="text-center mb-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-2 flex items-center justify-center">
+              <span className="mr-2">🎓</span>
+              {language === 'EN' ? 'Next Step: Keep learning, get certified with a Credly badge' : 'Langkah Selanjutnya: Terus belajar, dapatkan sertifikasi dengan lencana Credly'}
+            </h2>
+            <p className="text-gray-600">
+              {language === 'EN' 
+                ? 'Take your skills further with the official Siemens Solid Edge Certification and enhance your knowledge with free training via Siemens Xcelerator Academy.'
+                : 'Tingkatkan keterampilan Anda dengan Sertifikasi Siemens Solid Edge resmi dan tingkatkan pengetahuan Anda dengan pelatihan gratis melalui Siemens Xcelerator Academy.'
+              }
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Xcelerator Academy */}
+            <div className="neumo-card p-6">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Xcelerator Academy Online Training</h3>
+              </div>
+              
+              <ul className="text-sm text-gray-600 space-y-2 mb-6">
+                <li className="flex items-center">
+                  <span className="mr-2">📚</span>
+                  {language === 'EN' ? 'On-demand, virtual, and in-person learning' : 'Pembelajaran sesuai permintaan, virtual, dan tatap muka'}
+                </li>
+                <li className="flex items-center">
+                  <span className="mr-2">🌍</span>
+                  {language === 'EN' ? 'Free access to Solid Edge self-paced training for education & community users' : 'Akses gratis ke pelatihan Solid Edge mandiri untuk pengguna pendidikan & komunitas'}
+                </li>
+              </ul>
+
+              <div className="space-y-4">
+                <button
+                  onClick={handleAcademyClick}
+                  className="neumo-button primary w-full"
+                >
+                  {language === 'EN' ? 'Start Solid Edge Online Learning' : 'Mulai Pembelajaran Solid Edge Online'}
+                </button>
+                
+                <button
+                  onClick={handleRequestAccess}
+                  className="neumo-button secondary w-full"
+                >
+                  {language === 'EN' ? 'Request Free Access Code' : 'Minta Kode Akses Gratis'}
+                </button>
+              </div>
+            </div>
+
+            {/* Solid Edge Certification */}
+            <div className="neumo-card p-6">
+              <div className="text-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">Solid Edge Certification</h3>
+                <div className="flex items-center justify-center space-x-2 mb-3">
+                  <span className="text-green-600 font-bold">✅ 100% Free</span>
+                </div>
+              </div>
+              
+              <ul className="text-sm text-gray-600 space-y-2 mb-4">
+                <li className="flex items-center">
+                  <span className="mr-2">🛠️</span>
+                  {language === 'EN' ? 'Includes MCQs & 3D modeling' : 'Termasuk MCQ & pemodelan 3D'}
+                </li>
+                <li className="flex items-center">
+                  <span className="mr-2">🧑‍💼</span>
+                  {language === 'EN' ? 'Earn a Credly digital badge recognized by employers' : 'Dapatkan lencana digital Credly yang diakui oleh pemberi kerja'}
+                </li>
+              </ul>
+
+              <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-xs text-blue-800">
+                  {language === 'EN' 
+                    ? 'A Credly badge is a verified digital credential that showcases your certified skills, making your achievements visible and trusted by employers on platforms like LinkedIn, resumes, and portfolios.'
+                    : 'Lencana Credly adalah kredensial digital terverifikasi yang menampilkan keterampilan bersertifikat Anda, membuat pencapaian Anda terlihat dan dipercaya oleh pemberi kerja di platform seperti LinkedIn, resume, dan portofolio.'
+                  }
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <button
+                  onClick={handleCertificationClick}
+                  className="neumo-button primary w-full"
+                >
+                  {language === 'EN' ? 'Start Certification' : 'Mulai Sertifikasi'}
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setHasInteracted(true);
+                    window.open('https://www.credly.com/organizations/siemens-sw/directory', '_blank');
+                  }}
+                  className="neumo-button secondary w-full"
+                >
+                  {language === 'EN' ? 'View Credly Badges' : 'Lihat Lencana Credly'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Detailed Results by Area */}
         <div className="space-y-6">
           {Object.entries(groupedAnswers).map(([area, areaAnswers]) => (
@@ -245,6 +405,8 @@ const Summary = () => {
           ))}
         </div>
 
+
+
         {/* Action Buttons */}
         <div className="neumo-card mt-6">
           <div className="flex justify-center space-x-4">
@@ -280,6 +442,117 @@ const Summary = () => {
             }
           </p>
         </div>
+
+        {/* Access Code Request Modal */}
+        {showAccessModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="neumo-card max-w-md w-full">
+              <div className="text-center mb-6">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">✉️ Request Free Access Code</h3>
+                <p className="text-sm text-gray-600">
+                  {language === 'EN' 
+                    ? 'We\'ll send you a free access code for Siemens Xcelerator Academy training.'
+                    : 'Kami akan mengirimkan kode akses gratis untuk pelatihan Siemens Xcelerator Academy.'
+                  }
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === 'EN' ? 'Email Address' : 'Alamat Email'}
+                  </label>
+                  <input
+                    type="email"
+                    value={accessEmail}
+                    onChange={(e) => setAccessEmail(e.target.value)}
+                    className="neumo-input w-full"
+                    placeholder={language === 'EN' ? 'Enter your email' : 'Masukkan email Anda'}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {language === 'EN' ? 'Message (Optional)' : 'Pesan (Opsional)'}
+                  </label>
+                  <textarea
+                    value={accessMessage}
+                    onChange={(e) => setAccessMessage(e.target.value)}
+                    className="neumo-textarea w-full"
+                    rows="3"
+                    placeholder={language === 'EN' ? 'Any additional information...' : 'Informasi tambahan...'}
+                  />
+                </div>
+
+                <div className="flex space-x-3">
+                  <button
+                    onClick={() => setShowAccessModal(false)}
+                    className="neumo-button secondary flex-1"
+                  >
+                    {language === 'EN' ? 'Cancel' : 'Batal'}
+                  </button>
+                  <button
+                    onClick={handleSubmitAccessRequest}
+                    disabled={submittingAccess || !accessEmail}
+                    className="neumo-button primary flex-1 disabled:opacity-50"
+                  >
+                    {submittingAccess ? (
+                      <div className="flex items-center justify-center">
+                        <div className="neumo-spinner mr-2"></div>
+                        {language === 'EN' ? 'Sending...' : 'Mengirim...'}
+                      </div>
+                    ) : (
+                      language === 'EN' ? 'Send Request' : 'Kirim Permintaan'
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Reminder Notification */}
+        {showReminder && (
+          <div className="fixed bottom-4 right-4 max-w-sm bg-white rounded-lg shadow-lg border border-gray-200 p-4 z-40">
+            <div className="flex items-start space-x-3">
+              <div className="flex-shrink-0">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <div className="flex-1">
+                <h4 className="text-sm font-medium text-gray-800 mb-1">
+                  {language === 'EN' ? 'Don\'t miss this opportunity!' : 'Jangan lewatkan kesempatan ini!'}
+                </h4>
+                <p className="text-xs text-gray-600 mb-3">
+                  {language === 'EN' 
+                    ? 'Get certified and level up your CAD skills! You can come back anytime, or start now while it\'s fresh.'
+                    : 'Dapatkan sertifikasi dan tingkatkan keterampilan CAD Anda! Anda dapat kembali kapan saja, atau mulai sekarang selagi masih segar.'
+                  }
+                </p>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={handleCertificationClick}
+                    className="text-xs bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                  >
+                    {language === 'EN' ? 'Start Certification' : 'Mulai Sertifikasi'}
+                  </button>
+                  <button
+                    onClick={handleAcademyClick}
+                    className="text-xs bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600"
+                  >
+                    {language === 'EN' ? 'Access Academy' : 'Akses Academy'}
+                  </button>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowReminder(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

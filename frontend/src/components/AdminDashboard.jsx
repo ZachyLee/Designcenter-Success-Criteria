@@ -15,6 +15,7 @@ const AdminDashboard = () => {
   const [responses, setResponses] = useState([]);
   const [responseDetails, setResponseDetails] = useState({});
   const [questionStats, setQuestionStats] = useState([]);
+  const [accessRequests, setAccessRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('overview');
@@ -42,6 +43,7 @@ const AdminDashboard = () => {
       fetchDashboardData();
       fetchResponses();
       fetchQuestionStats();
+      fetchAccessRequests();
     }
   }, []);
 
@@ -61,7 +63,8 @@ const AdminDashboard = () => {
       await Promise.all([
         fetchDashboardData(),
         fetchResponses(),
-        fetchQuestionStats()
+        fetchQuestionStats(),
+        fetchAccessRequests()
       ]);
     } catch (error) {
       setError('Invalid credentials');
@@ -138,6 +141,33 @@ const AdminDashboard = () => {
       setQuestionStats(response.data.stats);
     } catch (error) {
       console.error('Error fetching question stats:', error);
+    }
+  };
+
+  const fetchAccessRequests = async () => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const response = await axios.get('/api/admin/access-requests', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setAccessRequests(response.data.data);
+    } catch (error) {
+      console.error('Error fetching access requests:', error);
+    }
+  };
+
+  const handleUpdateAccessRequestStatus = async (requestId, newStatus) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      await axios.put(`/api/admin/access-requests/${requestId}/status`, 
+        { status: newStatus },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      // Refresh access requests
+      await fetchAccessRequests();
+    } catch (error) {
+      console.error('Error updating access request status:', error);
     }
   };
 
@@ -610,6 +640,7 @@ const AdminDashboard = () => {
                       <th>Language</th>
                       <th>Completion</th>
                       <th>Answer Summary</th>
+                      <th>Access Request</th>
                       <th>Date</th>
                       <th>Actions</th>
                     </tr>
@@ -672,6 +703,27 @@ const AdminDashboard = () => {
                             ) : (
                               <span className="text-gray-400 text-xs">Loading...</span>
                             )}
+                          </td>
+                          <td>
+                            {(() => {
+                              const userAccessRequest = accessRequests.find(req => req.email === response.email);
+                              if (userAccessRequest) {
+                                return (
+                                  <div className="flex items-center space-x-2">
+                                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                      Yes
+                                    </span>
+                                    <span className="text-xs text-gray-500">
+                                      {new Date(userAccessRequest.timestamp).toLocaleDateString()}
+                                    </span>
+                                  </div>
+                                );
+                              } else {
+                                return (
+                                  <span className="text-gray-400 text-xs">No request</span>
+                                );
+                              }
+                            })()}
                           </td>
                           <td>{new Date(response.timestamp).toLocaleDateString()}</td>
                           <td>

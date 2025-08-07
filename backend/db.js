@@ -64,6 +64,16 @@ class Database {
             filename TEXT NOT NULL,
             uploaded_at DATETIME DEFAULT CURRENT_TIMESTAMP
           )
+        `);
+
+        this.sqlite.run(`
+          CREATE TABLE IF NOT EXISTS access_requests (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT NOT NULL,
+            message TEXT,
+            status TEXT DEFAULT 'pending',
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
         `, (err) => {
           if (err) reject(err);
           else resolve();
@@ -155,6 +165,39 @@ class Database {
   async insertExcelFile(filename) {
     const sql = 'INSERT INTO excel_files (filename) VALUES (?)';
     return await this.query(sql, [filename]);
+  }
+
+  async insertAccessRequest(email, message) {
+    try {
+      const sql = 'INSERT INTO access_requests (email, message) VALUES (?, ?)';
+      const result = await this.query(sql, [email, message]);
+      return result;
+    } catch (error) {
+      console.error('Database: Error inserting access request:', error);
+      throw error;
+    }
+  }
+
+  async getAllAccessRequests() {
+    try {
+      // First check if table exists
+      const tableCheck = await this.query("SELECT name FROM sqlite_master WHERE type='table' AND name='access_requests'");
+      
+      if (tableCheck.length === 0) {
+        return [];
+      }
+      
+      const result = await this.query('SELECT * FROM access_requests ORDER BY timestamp DESC');
+      return result;
+    } catch (error) {
+      console.error('Database: Error in getAllAccessRequests:', error);
+      return [];
+    }
+  }
+
+  async updateAccessRequestStatus(id, status) {
+    const sql = 'UPDATE access_requests SET status = ? WHERE id = ?';
+    return await this.query(sql, [status, id]);
   }
 
   close() {
